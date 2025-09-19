@@ -1,0 +1,16 @@
+[Bb]in/
+[Oo]bj/
+*.log
+*.pdb
+*.suo
+*.user
+*.config.user
+*.bak
+*.cache
+*.com
+*.exe
+*.dll
+[Rr]elease/
+[Dd]ebug/
+Results/
+PartialMatches/
