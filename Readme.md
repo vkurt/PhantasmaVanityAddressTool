@@ -32,7 +32,7 @@ This is an experimental tool created with the help of AI. It is provided "as is"
 
 For most users, this is the easiest way to use the tool. The executable files are self-contained and do not require the .NET SDK to be installed.
 
-1. Navigate to the [Releases page on GitHub](https://www.google.com/search?q=https://github.com/your-username/your-repo/releases) (or wherever the executables are hosted).
+1. Navigate to the [Releases page on GitHub](https://github.com/vkurt/PhantasmaVanityAddressTool/releases).
 
 2. Download the appropriate file for your operating system:
 
