@@ -1,3 +1,5 @@
+Of course! Here is the content of the `README.md` file, formatted in raw Markdown for easy copying and pasting to GitHub.
+
 # Phantasma Vanity Address Generator
 
 This is an experimental command-line tool designed to generate Phantasma addresses that contain a specific, desired pattern. It's built to assist users in creating personalized addresses for the Phantasma blockchain.
@@ -32,7 +34,7 @@ This is an experimental tool created with the help of AI. It is provided "as is"
 
 For most users, this is the easiest way to use the tool. The executable files are self-contained and do not require the .NET SDK to be installed.
 
-1. Navigate to the [Releases page on GitHub](https://github.com/vkurt/PhantasmaVanityAddressTool/releases) (or wherever the executables are hosted).
+1. Navigate to the [Releases page on GitHub](https://www.google.com/search?q=https://github.com/your-username/your-repo/releases) (or wherever the executables are hosted).
 
 2. Download the appropriate file for your operating system:
 
@@ -40,7 +42,9 @@ For most users, this is the easiest way to use the tool. The executable files ar
 
    * **Linux**: Download the `phantasma-vanity-generator-linux-x64.zip` file, extract it, and run the `VanityAddressGenerator` executable.
 
-   * **macOS**: Download the `phantasma-vanity-generator-osx-x64.zip` file, extract it, and run the `VanityAddressGenerator` executable.
+   * **macOS (Intel)**: Download the `phantasma-vanity-generator-osx-x64.zip` file, extract it, and run the `VanityAddressGenerator` executable.
+
+   * **macOS (Apple Silicon)**: Download the `phantasma-vanity-generator-osx-arm64.zip` file, extract it, and run the `VanityAddressGenerator` executable.
 
 ### Building from Source
 
@@ -79,6 +83,22 @@ The program will guide you through the process with a series of prompts:
 6. **Choose a generation method:** Select one of the four methods listed in the Features section.
 
 7. **Save partial matches:** Choose `y` or `n` to save addresses that partially match your criteria.
+
+### Instructions for Mac Users
+
+When a Mac user tries to open an application that hasn't been notarized by Apple, they may see a security warning like "Apple could not verify..." This is a standard security feature called Gatekeeper.
+
+To run the application, the user must override the security settings one time.
+
+1. Find the application file in Finder.
+
+2. Hold down the `Control` key and click on the application icon.
+
+3. Select **Open** from the context menu that appears.
+
+4. A new dialog box will appear. Click **Open Anyway**.
+
+5. After this, the application will be trusted and will open normally in the future.
 
 ### Generated Files
 
