@@ -1,5 +1,3 @@
-Of course! Here is the content of the `README.md` file, formatted in raw Markdown for easy copying and pasting to GitHub.
-
 # Phantasma Vanity Address Generator
 
 This is an experimental command-line tool designed to generate Phantasma addresses that contain a specific, desired pattern. It's built to assist users in creating personalized addresses for the Phantasma blockchain.
