@@ -1,9 +1,11 @@
-﻿using PhantasmaPhoenix.Cryptography;
+﻿using NBitcoin;
+using PhantasmaPhoenix.Cryptography;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading; // Added for Thread.Sleep visibility
 
 public class VanityAddressGenerator
 {
@@ -12,17 +14,28 @@ public class VanityAddressGenerator
 
     public static void Main(string[] args)
     {
+
         string? continueChoice;
         do
         {
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine("Phantasma Vanity Address Generator");
+            Console.ResetColor();
             Console.WriteLine("-----------------------------------");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Press enter for default values");
+            Console.ResetColor();
 
             string desiredPattern;
             while (true)
             {
-                Console.Write("Enter the desired pattern: ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Blue;
+                Console.Write("Enter the desired pattern: \n");
+                Console.ResetColor();
+
                 desiredPattern = Console.ReadLine() ?? string.Empty;
 
                 if (string.IsNullOrWhiteSpace(desiredPattern))
@@ -38,14 +51,18 @@ public class VanityAddressGenerator
                     break;
                 }
             }
-            
+
             string caseChoice;
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Blue;
                 Console.WriteLine("\nChoose case sensitivity (Default: 1):");
-                Console.WriteLine("1. Case-insensitive (Fast)");
-                Console.WriteLine("2. Case-sensitive (Slow)");
-                Console.Write("Enter your choice (1 or 2): ");
+                Console.ResetColor();
+                Console.WriteLine("1. Case-sensitive (Slow)");
+                Console.WriteLine("2. Case-insensitive (Fast)");
+                
+                Console.Write("Enter your choice (1 or 2): \n");
                 caseChoice = Console.ReadLine() ?? "1";
                 if (string.IsNullOrWhiteSpace(caseChoice)) caseChoice = "1";
                 if (caseChoice == "1" || caseChoice == "2")
@@ -54,15 +71,18 @@ public class VanityAddressGenerator
                 }
                 Console.WriteLine("\nInvalid choice. Please enter 1 or 2.");
             }
-            bool isCaseSensitive = (caseChoice == "2");
+            bool isCaseSensitive = caseChoice == "1";
 
             string positionChoice;
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Blue;
                 Console.WriteLine("\nChoose pattern position (Default: 1):");
-                Console.WriteLine("1. Anywhere (Fast)");
-                Console.WriteLine("2. At the end (Slow)");
-                Console.Write("Enter your choice (1 or 2): ");
+                Console.ResetColor();
+                Console.WriteLine("1. At the end (Slow)");
+                Console.WriteLine("2. Anywhere (Fast)");               
+                Console.Write("Enter your choice (1 or 2): \n");
                 positionChoice = Console.ReadLine() ?? "1";
                 if (string.IsNullOrWhiteSpace(positionChoice)) positionChoice = "1";
                 if (positionChoice == "1" || positionChoice == "2")
@@ -71,9 +91,12 @@ public class VanityAddressGenerator
                 }
                 Console.WriteLine("\nInvalid choice. Please enter 1 or 2.");
             }
-            bool isAtEnd = (positionChoice == "2");
+            bool isAtEnd = positionChoice == "1";
 
-            Console.Write("\nEnter a give-up time in minutes (0 for no time limit) (Default: 0): ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.Write("\nEnter a give-up time in minutes (0 for no time limit) (Default: 0): \n");
+            Console.ResetColor();
             string giveUpInput = Console.ReadLine() ?? "0";
             if (string.IsNullOrWhiteSpace(giveUpInput)) giveUpInput = "0";
             int giveUpMinutes;
@@ -84,12 +107,16 @@ public class VanityAddressGenerator
                 if (string.IsNullOrWhiteSpace(giveUpInput)) giveUpInput = "0";
             }
             TimeSpan giveUpTime = TimeSpan.FromMinutes(giveUpMinutes);
-            
+
             string matchesInput;
             int desiredMatches;
             while (true)
             {
-                Console.Write("\nEnter the number of full matches you want to find (Default: 1): ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Blue;
+                Console.Write("\nEnter the number of full matches you want to find (Default: 1): \n");
+                Console.ResetColor();
+
                 matchesInput = Console.ReadLine() ?? "1";
                 if (string.IsNullOrWhiteSpace(matchesInput)) matchesInput = "1";
 
@@ -99,17 +126,22 @@ public class VanityAddressGenerator
                 }
                 Console.WriteLine("\nInvalid input. Please enter a positive integer.");
             }
-            
+
             string genChoice;
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Blue;
                 Console.WriteLine("\nChoose a generation method (Default: 1):");
-                Console.WriteLine("1. Fast (Generate from random private key)");
+                Console.ResetColor();
+                Console.WriteLine("1. Fast (Generate from random private key) (around 400x faster)");
                 Console.WriteLine("2. Slow (Generate from a random seed phrase)");
                 Console.WriteLine("3. Smart (Generate from a single new seed phrase, changing index)");
                 Console.WriteLine("4. User (Find an address on a specific seed phrase, changing index)");
-                Console.WriteLine("\n⚠️⚠️⚠️ For 3rd and 4th options be aware 99% of wallets not supports manually entering index number and if you lost index number it can be impossible to recover your assets please save your wif too.");
-                Console.Write("\nEnter your choice (1, 2, 3, or 4): ");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("\nFor 3rd and 4th options be aware 99% of wallets not supports manually entering index number and if you lost index number it can be impossible to recover your assets please save your wif too.");
+                Console.ResetColor();
+                Console.Write("\nEnter your choice (1, 2, 3, or 4): \n");
                 genChoice = Console.ReadLine() ?? "1";
                 if (string.IsNullOrWhiteSpace(genChoice)) genChoice = "1";
                 if (genChoice == "1" || genChoice == "2" || genChoice == "3" || genChoice == "4")
@@ -118,14 +150,16 @@ public class VanityAddressGenerator
                 }
                 Console.WriteLine("\nInvalid choice. Please enter 1, 2, 3, or 4.");
             }
-            
+
             string savePartialMatchesChoice;
             while (true)
             {
-                Console.WriteLine("\nSave partial matches to file? (y/n) (Default: y):");
-                Console.Write("Enter your choice: ");
-                savePartialMatchesChoice = Console.ReadLine() ?? "y";
-                if (string.IsNullOrWhiteSpace(savePartialMatchesChoice)) savePartialMatchesChoice = "y";
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Blue;
+                Console.WriteLine("\nSave partial matches to file? (y/n) (Default: n): \n");
+                Console.ResetColor();
+                savePartialMatchesChoice = Console.ReadLine() ?? "n";
+                if (string.IsNullOrWhiteSpace(savePartialMatchesChoice)) savePartialMatchesChoice = "n";
                 if (savePartialMatchesChoice.ToLower() == "y" || savePartialMatchesChoice.ToLower() == "n")
                 {
                     break;
@@ -156,42 +190,60 @@ public class VanityAddressGenerator
             {
                 Console.WriteLine("\nSearch was canceled.");
             }
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("\nDo you want to run another search? (y/n) (Default:n): \n");
+            Console.ResetColor();
 
-            Console.Write("\nDo you want to run another search? (y/n): ");
-            continueChoice = Console.ReadLine();
+            continueChoice = Console.ReadLine() ?? "n";
+
+            switch (continueChoice)
+            {
+                case "y":
+                    break;
+                case "n":
+                    break;
+                default:
+                    continueChoice = "n";
+                    break;
+            }
 
         } while (continueChoice?.ToLower() == "y");
 
         Console.WriteLine("Program exiting. Press any key to close...");
         Console.ReadKey();
     }
-    
+
     //-----------------------------------------------------------------------------------------
     // Method 1: Generate from random private key
     //-----------------------------------------------------------------------------------------
     public static bool GenerateFromKeyPair(string desiredPattern, bool isCaseSensitive, bool isAtEnd, TimeSpan giveUpTime, bool savePartialMatches, int desiredMatches)
     {
         Console.WriteLine("\nStarting fast generation...");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("Press 'P' for pause, 'Esc' to exit or retry...");
+        Console.ResetColor();
         long attempts = 0;
         int foundFullMatches = 0;
         int foundCaseMatches = 0;
         int foundPositionMatches = 0;
         int foundGenericMatches = 0;
         var stopwatch = Stopwatch.StartNew();
-        
+
         while (true)
         {
             var keyPair = PhantasmaKeys.Generate();
             var address = keyPair.Address.Text;
             attempts++;
             if (!CheckTimerAndInput(attempts, stopwatch, giveUpTime, foundFullMatches, desiredMatches, foundCaseMatches, foundPositionMatches, foundGenericMatches)) return false;
-            
+
             MatchCategory matchCategory = CategorizeMatch(address, desiredPattern, isCaseSensitive, isAtEnd);
 
             switch (matchCategory)
             {
                 case MatchCategory.FullMatch:
-                    Console.WriteLine("\n\n🎉 Success! Found a full-match vanity address!");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\nSuccess! Found a full-match vanity address!");
+                    Console.ResetColor();
                     Console.WriteLine($"Matching Address: {address}");
                     Console.WriteLine($"Private Key: {keyPair.ToWIF()}");
                     SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), null, true, matchCategory);
@@ -206,7 +258,9 @@ public class VanityAddressGenerator
                     foundCaseMatches++;
                     if (savePartialMatches)
                     {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"\n\n✅ {matchCategory} found: {address}");
+                        Console.ResetColor();
                         SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), null, false, matchCategory);
                     }
                     break;
@@ -214,7 +268,9 @@ public class VanityAddressGenerator
                     foundPositionMatches++;
                     if (savePartialMatches)
                     {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"\n\n✅ {matchCategory} found: {address}");
+                        Console.ResetColor();
                         SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), null, false, matchCategory);
                     }
                     break;
@@ -231,6 +287,9 @@ public class VanityAddressGenerator
     public static bool GenerateFromSeedPhrase(string desiredPattern, bool isCaseSensitive, bool isAtEnd, TimeSpan giveUpTime, bool savePartialMatches, int desiredMatches)
     {
         Console.WriteLine("\nStarting slow generation...");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("Press 'P' for pause, 'Esc' to exit or retry...");
+        Console.ResetColor();
         long attempts = 0;
         int foundFullMatches = 0;
         int foundCaseMatches = 0;
@@ -259,7 +318,9 @@ public class VanityAddressGenerator
             switch (matchCategory)
             {
                 case MatchCategory.FullMatch:
-                    Console.WriteLine("\n\n🎉 Success! Found a full-match vanity address!");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\nSuccess! Found a full-match vanity address!");
+                    Console.ResetColor();
                     Console.WriteLine($"Matching Address: {address}");
                     Console.WriteLine($"Seed Phrase: {seedPhrase}");
                     SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), seedPhrase, true, matchCategory);
@@ -274,7 +335,9 @@ public class VanityAddressGenerator
                     foundCaseMatches++;
                     if (savePartialMatches)
                     {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"\n\n✅ {matchCategory} found: {address}");
+                        Console.ResetColor();
                         SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), seedPhrase, false, matchCategory);
                     }
                     break;
@@ -282,7 +345,9 @@ public class VanityAddressGenerator
                     foundPositionMatches++;
                     if (savePartialMatches)
                     {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"\n\n✅ {matchCategory} found: {address}");
+                        Console.ResetColor();
                         SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), seedPhrase, false, matchCategory);
                     }
                     break;
@@ -292,13 +357,13 @@ public class VanityAddressGenerator
             }
         }
     }
-    
+
     //-----------------------------------------------------------------------------------------
     // Method 3: Generate from a single new seed phrase, changing index
     //-----------------------------------------------------------------------------------------
     public static bool GenerateFromSeedWithIndex(string desiredPattern, bool isCaseSensitive, bool isAtEnd, TimeSpan giveUpTime, bool savePartialMatches, int desiredMatches)
     {
-        Console.WriteLine("\nStarting smart generation...");
+        Console.WriteLine("\nStarting smart generation\nPress 'P' for pause, 'Esc' to exit or retry...");
         string seedPhrase = Mnemonics.GenerateMnemonic(MnemonicPhraseLength.Twelve_Words);
         Console.WriteLine($"\nBase Seed Phrase: {seedPhrase}");
         Console.WriteLine("Searching for matching address by incrementing index...");
@@ -308,7 +373,7 @@ public class VanityAddressGenerator
         int foundPositionMatches = 0;
         int foundGenericMatches = 0;
         var stopwatch = Stopwatch.StartNew();
-        
+
         while (true)
         {
             var (pk, errorMessage) = Mnemonics.MnemonicToPK(seedPhrase, attempts);
@@ -328,7 +393,9 @@ public class VanityAddressGenerator
             switch (matchCategory)
             {
                 case MatchCategory.FullMatch:
-                    Console.WriteLine("\n\n🎉 Success! Found a full-match vanity address!");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\nSuccess! Found a full-match vanity address!");
+                    Console.ResetColor();
                     Console.WriteLine($"Matching Address: {address}");
                     Console.WriteLine($"Derived from Index: {attempts - 1}");
                     Console.WriteLine($"Original Seed Phrase: {seedPhrase}");
@@ -344,7 +411,9 @@ public class VanityAddressGenerator
                     foundCaseMatches++;
                     if (savePartialMatches)
                     {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"\n\n✅ {matchCategory} found: {address}");
+                        Console.ResetColor();
                         SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), seedPhrase, false, matchCategory, attempts - 1);
                     }
                     break;
@@ -352,7 +421,9 @@ public class VanityAddressGenerator
                     foundPositionMatches++;
                     if (savePartialMatches)
                     {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"\n\n✅ {matchCategory} found: {address}");
+                        Console.ResetColor();
                         SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), seedPhrase, false, matchCategory, attempts - 1);
                     }
                     break;
@@ -368,16 +439,19 @@ public class VanityAddressGenerator
             }
         }
     }
-    
+
     //-----------------------------------------------------------------------------------------
     // Method 4: Find an address on a user-provided seed phrase, changing index
     //-----------------------------------------------------------------------------------------
     public static bool GenerateFromUserSeedWithIndex(string desiredPattern, bool isCaseSensitive, bool isAtEnd, TimeSpan giveUpTime, bool savePartialMatches, int desiredMatches)
     {
-        Console.WriteLine("\n⚠️  WARNING: Enter your seed phrase ONLY on an offline computer.");
+        Console.WriteLine("\n⚠️ WARNING: Enter your seed phrase ONLY on an offline computer.");
         Console.Write("Enter your 12 or 24-word seed phrase (separated by spaces): ");
         string userSeedPhrase = Console.ReadLine() ?? string.Empty;
         Console.WriteLine($"\nSearching for matching address from your seed phrase...");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("Press 'P' for pause, 'Esc' to exit or retry...");
+        Console.ResetColor();
         uint attempts = 0;
         int foundFullMatches = 0;
         int foundCaseMatches = 0;
@@ -403,7 +477,9 @@ public class VanityAddressGenerator
             switch (matchCategory)
             {
                 case MatchCategory.FullMatch:
-                    Console.WriteLine("\n\n🎉 Success! Found a full-match vanity address!");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\nSuccess! Found a full-match vanity address!");
+                    Console.ResetColor();
                     Console.WriteLine($"Matching Address: {address}");
                     Console.WriteLine($"Derived from Index: {attempts - 1}");
                     Console.WriteLine($"Original Seed Phrase: {userSeedPhrase}");
@@ -419,7 +495,9 @@ public class VanityAddressGenerator
                     foundCaseMatches++;
                     if (savePartialMatches)
                     {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"\n\n✅ {matchCategory} found: {address}");
+                        Console.ResetColor();
                         SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), userSeedPhrase, false, matchCategory, attempts - 1);
                     }
                     break;
@@ -427,7 +505,9 @@ public class VanityAddressGenerator
                     foundPositionMatches++;
                     if (savePartialMatches)
                     {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"\n\n✅ {matchCategory} found: {address}");
+                        Console.ResetColor();
                         SaveMatchToFile(desiredPattern, address, keyPair.ToWIF(), userSeedPhrase, false, matchCategory, attempts - 1);
                     }
                     break;
@@ -435,7 +515,7 @@ public class VanityAddressGenerator
                     foundGenericMatches++;
                     break;
             }
-            
+
             if (attempts == 4294967295)
             {
                 Console.WriteLine("Reached maximum attempts try again with shorter pattern or select fast options.");
@@ -455,6 +535,7 @@ public class VanityAddressGenerator
             return false;
         }
 
+        // Check for pause or exit input
         if (Console.KeyAvailable)
         {
             var key = Console.ReadKey(true).Key;
@@ -466,23 +547,62 @@ public class VanityAddressGenerator
             if (key == ConsoleKey.P)
             {
                 stopwatch.Stop();
-                Console.WriteLine("\n\n⏸️  Paused. Press any key to continue...");
-                Console.ReadKey(true);
+                Console.WriteLine("\n\n⏸️ Paused. Press any key to continue...");
+                // Ensure the final status line before the pause is fully visible
                 Console.CursorVisible = true;
+                Console.ReadKey(true);
+                // After key press, resume and reset the cursor visible state if necessary
+                Console.CursorVisible = false;
                 stopwatch.Start();
             }
         }
 
+        // Update status line every 1000 attempts
         if (attempts % 1000 == 0)
         {
             TimeSpan elapsed = stopwatch.Elapsed;
             double attemptsPerSecond = attempts / elapsed.TotalSeconds;
-            
+
             string remainingTime = giveUpTime > TimeSpan.Zero
                 ? $" | Remaining: {(giveUpTime - elapsed).ToString(@"hh\:mm\:ss")}"
                 : "";
-            
-            Console.Write($"\rChecked {attempts:N0} | Elapsed: {elapsed.ToString(@"hh\:mm\:ss")} | Speed: {attemptsPerSecond:N2} adds/sec{remainingTime} | Matches: F:{foundFullMatches}/{desiredFullMatches} C:{foundCaseMatches} P:{foundPositionMatches} G:{foundGenericMatches} | Press 'P' for pause, 'Esc' to exit or retry");
+
+            // Construct the full status line, starting with '\r'
+            string statusLine =
+                $"\rChecked {attempts:N0} | Elapsed: {elapsed.ToString(@"hh\:mm\:ss")} | Speed: {attemptsPerSecond:N2} adds/sec{remainingTime} | Matches: F:{foundFullMatches}/{desiredFullMatches} C:{foundCaseMatches} P:{foundPositionMatches} G:{foundGenericMatches}";
+
+            // --- Truncation Logic Updated Here ---
+            try
+            {
+                int consoleWidth = Console.WindowWidth;
+                const string ellipsis = " ..."; // Ellipsis plus a leading space for better readability
+                int ellipsisLength = ellipsis.Length;
+
+                if (statusLine.Length > consoleWidth)
+                {
+                    // Calculate the maximum length the status text can be before adding the ellipsis.
+                    // We need to reserve space for the ellipsis and one extra character for safety 
+                    // (to prevent wrapping due to hidden terminal characters or cursor position).
+                    int truncateLength = consoleWidth - ellipsisLength - 1;
+
+                    if (truncateLength > 0)
+                    {
+                        statusLine = statusLine.Substring(0, truncateLength) + ellipsis;
+                    }
+                    else
+                    {
+                        // Handle extremely small console widths by showing at least the ellipsis
+                        statusLine = ellipsis;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore console errors if running in a restricted environment
+            }
+            // --- End Truncation Logic ---
+
+            Console.Write(statusLine);
         }
         return true;
     }
@@ -499,7 +619,7 @@ public class VanityAddressGenerator
 
         bool isCaseCorrect = address.IndexOf(pattern, strictComparison) >= 0;
         bool isPositionCorrect = isAtEnd ? address.EndsWith(pattern, broadComparison) : true;
-        
+
         bool broadMatch = address.IndexOf(pattern, broadComparison) >= 0;
 
         if (!broadMatch)
@@ -512,7 +632,7 @@ public class VanityAddressGenerator
         {
             return MatchCategory.FullMatch;
         }
-        
+
         // Partial Match Categories
         if (isCaseCorrect)
         {
@@ -525,18 +645,18 @@ public class VanityAddressGenerator
 
         return MatchCategory.GenericPartialMatch;
     }
-    
+
     private static void SaveMatchToFile(string desiredPattern, string address, string privateKey, string? seedPhrase, bool isFullMatch, MatchCategory category, long? index = null)
     {
         string baseFolder = "Results";
-        
-        
+
+
         string categoryFolderName = category.ToString();
         string finalFolderPath = Path.Combine(baseFolder, categoryFolderName);
         Directory.CreateDirectory(finalFolderPath);
 
         string filename = Path.Combine(finalFolderPath, $"{desiredPattern}.txt");
-        
+
         using (StreamWriter writer = new StreamWriter(filename, true)) // 'true' to append
         {
             writer.WriteLine("------------------------------------------");
@@ -557,7 +677,7 @@ public class VanityAddressGenerator
             }
             writer.WriteLine("------------------------------------------");
         }
-        
+
         Console.WriteLine($"\n✅ Saved to: {Path.GetFullPath(filename)}");
     }
 }
